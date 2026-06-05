@@ -1,2 +1,7 @@
 backend/node_modules/
 database/vaultly.db
+
+node_modules/
+mobile/node_modules/
+
+*.log
