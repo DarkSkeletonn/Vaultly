@@ -39,8 +39,37 @@ function getMemoryById(id) {
     return stmt.get(id);
 }
 
+function deleteMemory(id) {
+
+    const stmt = db.prepare(`
+        DELETE FROM memories
+        WHERE id = ?
+    `);
+
+    return stmt.run(id);
+}
+
+function updateMemory(id, title, content) {
+
+    const stmt = db.prepare(`
+        UPDATE memories
+        SET
+            title = ?,
+            content = ?
+        WHERE id = ?
+    `);
+
+    return stmt.run(
+        title,
+        content,
+        id
+    );
+}
+
 module.exports = {
     createMemory,
     getAllMemories,
-    getMemoryById
+    getMemoryById,
+    updateMemory,
+    deleteMemory
 };

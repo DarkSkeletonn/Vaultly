@@ -1,7 +1,14 @@
 const {
+    updateMemory,
     getMemoryById
 } = require("./database/memoryRepository");
 
-const memory = getMemoryById(1);
+updateMemory(
+    1,
+    "Google Summer Internship",
+    "Apply before 25 June"
+);
 
-console.log(memory);
+console.log(
+    getMemoryById(1)
+);
