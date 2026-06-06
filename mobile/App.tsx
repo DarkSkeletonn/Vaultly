@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   Text,
@@ -8,6 +8,19 @@ import {
 } from 'react-native';
 
 export default function App() {
+  const [folders, setFolders] = useState<any[]>([]);
+
+  useEffect(() => {
+  fetch("http://10.0.2.2:3000/folders")
+    .then(response => response.json())
+    .then(data => {
+      setFolders(data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.logo}>📦</Text>
@@ -19,21 +32,14 @@ export default function App() {
         style={styles.search}
       />
 
-      <View style={styles.card}>
-        <Text>📁 Fashion</Text>
-      </View>
-
-      <View style={styles.card}>
-        <Text>📁 Study</Text>
-      </View>
-
-      <View style={styles.card}>
-        <Text>📁 Travel</Text>
-      </View>
-
-      <View style={styles.card}>
-        <Text>📁 Saved Reels</Text>
-      </View>
+      {folders.map((folder) => (
+        <View
+          key={folder.id}
+          style={styles.card}
+        >
+          <Text>📁 {folder.name}</Text>
+        </View>
+      ))}
     </SafeAreaView>
   );
 }

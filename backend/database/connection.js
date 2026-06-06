@@ -1,5 +1,8 @@
 const Database = require("better-sqlite3");
+const path = require("path");
 
-const db = new Database("../database/vaultly.db");
+const dbPath = path.join(__dirname, "../../database/vaultly.db");
+
+const db = new Database(dbPath);
 
 module.exports = db;
