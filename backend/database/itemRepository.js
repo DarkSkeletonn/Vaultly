@@ -1,21 +1,33 @@
 const db = require("./connection");
 
-function createItem(title, source, type, content) {
+function createItem(
+  title,
+  source,
+  type,
+  content,
+  path,
+  folderId
+) {
+
   const stmt = db.prepare(`
-    INSERT INTO items (
+    INSERT OR IGNORE INTO items (
       title,
       source,
       type,
-      content
+      content,
+      path,
+      folder_id
     )
-    VALUES (?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?)
   `);
 
   const result = stmt.run(
     title,
     source,
     type,
-    content
+    content,
+    path,
+    folderId
   );
 
   return result.lastInsertRowid;
@@ -80,10 +92,23 @@ function updateItem(id, title, source, type, content) {
   );
 }
 
+function getItemsByFolder(folderId) {
+
+  const stmt = db.prepare(`
+    SELECT *
+    FROM items
+    WHERE folder_id = ?
+    ORDER BY created_at DESC
+  `);
+
+  return stmt.all(folderId);
+}
+
 module.exports = {
   createItem,
   getAllItems,
   searchItems,
   deleteItem,
-  updateItem
+  updateItem,
+  getItemsByFolder
 };

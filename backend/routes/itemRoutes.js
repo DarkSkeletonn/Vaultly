@@ -15,14 +15,16 @@ router.post("/", (req, res) => {
     title,
     source,
     type,
-    content
+    content,
+    folderId
   } = req.body;
 
   const id = createItem(
     title,
     source,
     type,
-    content
+    content,
+    folderId
   );
 
   res.status(201).json({
@@ -92,9 +94,11 @@ router.post("/share", (req, res) => {
 
   let source = "Unknown";
   let type = "link";
+  let folderId = 3; // Documents default
 
   if(sharedText.includes("instagram")) {
     source = "Instagram";
+    folderId = 4;
   }
 
   if(sharedText.includes("reel")) {
@@ -104,20 +108,48 @@ router.post("/share", (req, res) => {
   if(sharedText.includes("pinterest")) {
     source = "Pinterest";
     type = "pin";
+    folderId = 5;
   }
 
   const id = createItem(
     "Shared Content",
     source,
     type,
-    sharedText
+    sharedText,
+    folderId
   );
 
   res.status(201).json({
     id,
     source,
     type,
+    folderId,
     message: "Shared item saved"
+  });
+
+});
+
+router.post("/index", (req, res) => {
+
+  const {
+    title,
+    path,
+    type,
+    folderId
+  } = req.body;
+
+  const id = createItem(
+    title,
+    "Gallery",
+    type,
+    "",
+    path,
+    folderId
+  );
+
+  res.status(201).json({
+    id,
+    message: "Indexed successfully"
   });
 
 });

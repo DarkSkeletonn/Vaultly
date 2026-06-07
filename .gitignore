@@ -1,7 +1,13 @@
 backend/node_modules/
+mobile/node_modules/
+node_modules/
+
 database/vaultly.db
 
-node_modules/
-mobile/node_modules/
-
 *.log
+
+android/.gradle/
+android/build/
+android/app/build/
+
+.vscode/

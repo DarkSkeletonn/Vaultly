@@ -1,36 +1,14 @@
 const db = require("./connection");
 
 db.prepare(`
-    CREATE TABLE IF NOT EXISTS memories (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        content TEXT NOT NULL,
-        source_type TEXT,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
-    )
-`).run();
-
-console.log("Memories table created!");
-
-db.prepare(`
-    CREATE TABLE IF NOT EXISTS tasks (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        deadline TEXT,
-        status TEXT DEFAULT 'pending',
-        memory_id INTEGER
-    )
-`).run();
-
-console.log("Tasks table created!");
-
-db.prepare(`
   CREATE TABLE IF NOT EXISTS items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     source TEXT NOT NULL,
     type TEXT NOT NULL,
     content TEXT NOT NULL,
+    path TEXT UNIQUE,
+    folder_id INTEGER NOT NULL,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
   )
 `).run();
@@ -56,3 +34,30 @@ db.prepare(`
 `).run();
 
 console.log("Folders table created!");
+
+db.prepare(`
+  INSERT OR IGNORE INTO folders(name)
+  VALUES ('Photos')
+`).run();
+
+db.prepare(`
+  INSERT OR IGNORE INTO folders(name)
+  VALUES ('Videos')
+`).run();
+
+db.prepare(`
+  INSERT OR IGNORE INTO folders(name)
+  VALUES ('Documents')
+`).run();
+
+db.prepare(`
+  INSERT OR IGNORE INTO folders(name)
+  VALUES ('Instagram')
+`).run();
+
+db.prepare(`
+  INSERT OR IGNORE INTO folders(name)
+  VALUES ('Pinterest')
+`).run();
+
+console.log("Default folders seeded!");

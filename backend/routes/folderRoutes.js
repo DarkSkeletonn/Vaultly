@@ -6,6 +6,10 @@ const {
   getAllFolders
 } = require("../database/folderRepository");
 
+const {
+  getItemsByFolder
+} = require("../database/itemRepository");
+
 router.post("/", (req, res) => {
 
   const { name } = req.body;
@@ -23,6 +27,16 @@ router.get("/", (req, res) => {
   const folders = getAllFolders();
 
   res.json(folders);
+
+});
+
+router.get("/:id/items", (req, res) => {
+
+  const folderId = req.params.id;
+
+  const items = getItemsByFolder(folderId);
+
+  res.json(items);
 
 });
 
