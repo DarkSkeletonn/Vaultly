@@ -4,9 +4,15 @@ import {
   Text,
   FlatList,
   StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
 } from "react-native";
 
-export default function FolderScreen({ route }: any) {
+export default function FolderScreen({
+  route,
+  navigation,
+}: any) {
 
   const { folderId, folderName } = route.params;
 
@@ -32,35 +38,97 @@ export default function FolderScreen({ route }: any) {
 
       <FlatList
         data={items}
-        keyExtractor={(item) =>
+        numColumns={2}
+        keyExtractor={(item: any) =>
           item.id.toString()
         }
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text>{item.title}</Text>
-            <Text>{item.type}</Text>
-          </View>
-        )}
+        renderItem={({ item }: any) => (
+
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => {
+              navigation.navigate(
+                "Folder",
+                {
+                  folderId: 1,
+                  folderName: "Photos",
+                }
+              );
+            }}
+          >
+            <Image
+              source={{ uri: item.path }}
+              style={styles.thumbnail}
+            />
+
+            <Text
+              numberOfLines={1}
+              style={styles.itemTitle}
+            >
+              {item.title}
+            </Text>
+
+          </TouchableOpacity>
+
+        )
+        }
       />
 
-    </View>
+    </View >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: "#0F172A",
+    padding: 15,
   },
+  thumbnail: {
+    width: "100%",
+    height: 140,
+    borderRadius: 14,
+  },
+
   title: {
-    fontSize: 28,
+    color: "#FFFFFF",
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 20,
   },
+
+  itemTitle: {
+    color: "#FFFFFF",
+    marginTop: 8,
+    fontSize: 13,
+  },
+
   card: {
-    borderWidth: 1,
-    padding: 15,
-    borderRadius: 10,
+    flex: 1,
+    margin: 6,
+  },
+
+  imagePlaceholder: {
+    height: 120,
+    borderRadius: 14,
+    backgroundColor: "#334155",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 10,
+  },
+
+  imageIcon: {
+    fontSize: 40,
+  },
+
+  fileName: {
+    color: "#FFFFFF",
+    fontSize: 11,
+    marginTop: 4,
+  },
+
+  fileType: {
+    color: "#94A3B8",
+    marginTop: 4,
   },
 });

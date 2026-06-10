@@ -6,12 +6,29 @@ import {
   TextInput,
   View,
   StyleSheet,
-  Button,
   NativeModules,
   TouchableOpacity,
   PermissionsAndroid,
   Platform,
+  ScrollView,
 } from "react-native";
+
+const getFolderIcon = (name: string) => {
+  switch (name.toLowerCase()) {
+    case "photos":
+      return "🖼️";
+    case "videos":
+      return "🎥";
+    case "documents":
+      return "📄";
+    case "instagram":
+      return "📸";
+    case "pinterest":
+      return "📌";
+    default:
+      return "📁";
+  }
+};
 
 export default function HomeScreen({ navigation }: any) {
 
@@ -139,58 +156,113 @@ export default function HomeScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
 
-      <Text style={styles.logo}>📦</Text>
+        <Text style={styles.logo}>🔒</Text>
 
-      <Text style={styles.title}>
-        Vaultly
-      </Text>
+        <Text style={styles.title}>
+          Vaultly
+        </Text>
 
-      <TextInput
-        placeholder="Search your vault..."
-        style={styles.search}
-      />
+        <Text style={styles.subtitle}>
+          Welcome Back 👋
+        </Text>
 
-      <Button
-        title="Load Gallery"
-        onPress={loadGallery}
-      />
+        <Text style={styles.tagline}>
+          Your memories, organized and searchable.
+        </Text>
 
-      <Button
-        title="Load Videos"
-        onPress={loadVideos}
-      />
+        <TextInput
+          placeholder="🔍 Search anything..."
+          placeholderTextColor="#94A3B8"
+          style={styles.search}
+        />
 
-      <Button
-        title="Load PDFs"
-        onPress={loadPdfs}
-      />
+        <Text style={styles.sectionTitle}>
+          Quick Actions
+        </Text>
 
-      {folders.map((folder) => (
+        <View style={styles.quickGrid}>
 
-        <TouchableOpacity
-          key={folder.id}
-          onPress={() =>
-            navigation.navigate(
-              "Folder",
-              {
-                folderId: folder.id,
-                folderName: folder.name
-              }
-            )
-          }
-        >
+          <TouchableOpacity
+            style={styles.quickCard}
+            onPress={loadGallery}
+          >
+            <Text style={styles.quickIcon}>🖼️</Text>
+            <Text style={styles.quickTitle}>Photos</Text>
+          </TouchableOpacity>
 
-          <View style={styles.card}>
-            <Text>
-              📁 {folder.name}
-            </Text>
-          </View>
+          <TouchableOpacity
+            style={styles.quickCard}
+            onPress={loadVideos}
+          >
+            <Text style={styles.quickIcon}>🎥</Text>
+            <Text style={styles.quickTitle}>Videos</Text>
+          </TouchableOpacity>
 
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.quickCard}
+            onPress={loadPdfs}
+          >
+            <Text style={styles.quickIcon}>📄</Text>
+            <Text style={styles.quickTitle}>Documents</Text>
+          </TouchableOpacity>
 
-      ))}
+          <TouchableOpacity
+            style={styles.quickCard}
+          >
+            <Text style={styles.quickIcon}>🔗</Text>
+            <Text style={styles.quickTitle}>Save Link</Text>
+          </TouchableOpacity>
 
+        </View>
+
+        <Text style={styles.sectionTitle}>
+          Your Vault
+        </Text>
+
+        {folders.map((folder) => (
+
+          <TouchableOpacity
+            key={folder.id}
+            onPress={() =>
+              navigation.navigate(
+                "Folder",
+                {
+                  folderId: folder.id,
+                  folderName: folder.name
+                }
+              )
+            }
+          >
+
+            <View style={styles.folderCard}>
+
+              <View>
+
+                <Text style={styles.folderName}>
+                  {getFolderIcon(folder.name)} {folder.name}
+                </Text>
+
+                <Text style={styles.folderSub}>
+                  All your {folder.name.toLowerCase()}
+                </Text>
+
+              </View>
+
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>
+                  0
+                </Text>
+              </View>
+
+            </View>
+
+          </TouchableOpacity>
+
+        ))}
+
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -199,29 +271,122 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#0F172A",
   },
+
   logo: {
-    fontSize: 50,
+    fontSize: 60,
     textAlign: "center",
-    marginTop: 30,
+    marginTop: 25,
   },
+
   title: {
-    fontSize: 32,
+    fontSize: 42,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
+    color: "#FFFFFF",
   },
+
+  subtitle: {
+    textAlign: "center",
+    color: "#FFFFFF",
+    fontSize: 26,
+    fontWeight: "700",
+    marginTop: 15,
+  },
+
+  tagline: {
+    textAlign: "center",
+    color: "#94A3B8",
+    marginTop: 8,
+    marginBottom: 25,
+    fontSize: 15,
+  },
+
   search: {
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
+    backgroundColor: "#1E293B",
+    borderRadius: 18,
+    padding: 16,
+    color: "#FFFFFF",
+    marginBottom: 25,
+  },
+
+  sectionTitle: {
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 15,
+  },
+
+  quickGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     marginBottom: 20,
   },
-  card: {
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 18,
+
+  quickCard: {
+    width: "48%",
+    backgroundColor: "#1E293B",
+    borderRadius: 20,
+    paddingVertical: 25,
+    alignItems: "center",
+    marginBottom: 12,
+  },
+
+  quickIcon: {
+    fontSize: 28,
     marginBottom: 10,
+  },
+
+  quickTitle: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  folderCard: {
+    shadowColor: "#7C3AED",
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 5,
+    backgroundColor: "#1E293B",
+    borderRadius: 18,
+    padding: 20,
+    marginBottom: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  folderName: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  folderSub: {
+    color: "#94A3B8",
+    marginTop: 4,
+    fontSize: 13,
+  },
+
+  badge: {
+    backgroundColor: "#7C3AED",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+
+  badgeText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+  },
+
+
+
+  arrow: {
+    color: "#8B5CF6",
+    fontSize: 22,
+    fontWeight: "bold",
   },
 });
