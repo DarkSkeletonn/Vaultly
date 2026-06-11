@@ -46,16 +46,22 @@ function getAllItems() {
 function searchItems(query) {
 
   const stmt = db.prepare(`
-    SELECT *
+    SELECT DISTINCT items.*
     FROM items
+    LEFT JOIN tags
+      ON tags.item_id = items.id
     WHERE
-      title LIKE ?
-      OR content LIKE ?
-      OR source LIKE ?
-    ORDER BY created_at DESC
+      items.title LIKE ?
+      OR items.content LIKE ?
+      OR items.source LIKE ?
+      OR items.type LIKE ?
+      OR tags.tag LIKE ?
+    ORDER BY items.created_at DESC
   `);
 
   return stmt.all(
+    `%${query}%`,
+    `%${query}%`,
     `%${query}%`,
     `%${query}%`,
     `%${query}%`

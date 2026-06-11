@@ -3,7 +3,8 @@ const router = express.Router();
 
 const {
   createFolder,
-  getAllFolders
+  getAllFolders,
+  getFolderStats
 } = require("../database/folderRepository");
 
 const {
@@ -27,6 +28,14 @@ router.get("/", (req, res) => {
   const folders = getAllFolders();
 
   res.json(folders);
+
+});
+
+router.get("/stats", (req, res) => {
+
+  const stats = getFolderStats();
+
+  res.json(stats);
 
 });
 

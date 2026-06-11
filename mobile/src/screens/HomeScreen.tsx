@@ -34,6 +34,8 @@ export default function HomeScreen({ navigation }: any) {
 
   const [folders, setFolders] = useState<any[]>([]);
 
+  const [folderStats, setFolderStats] = useState<any[]>([]);
+
   const { GalleryModule } = NativeModules;
 
   const requestPermission = async () => {
@@ -91,6 +93,8 @@ export default function HomeScreen({ navigation }: any) {
         );
       }
 
+      refreshFolderStats();
+
     } catch (error) {
       console.log(error);
     }
@@ -122,9 +126,24 @@ export default function HomeScreen({ navigation }: any) {
         );
       }
 
+      refreshFolderStats();
+
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const refreshFolderStats = () => {
+
+    fetch("http://10.0.2.2:3000/folders/stats")
+      .then(response => response.json())
+      .then(data => {
+        setFolderStats(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
   };
 
   const loadPdfs = async () => {
@@ -151,6 +170,8 @@ export default function HomeScreen({ navigation }: any) {
       .catch(error => {
         console.log(error);
       });
+    
+    refreshFolderStats();
 
   }, []);
 
@@ -252,7 +273,11 @@ export default function HomeScreen({ navigation }: any) {
 
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>
-                  0
+                  {
+                    folderStats.find(
+                      (f) => f.id === folder.id
+                    )?.count ?? 0
+                  }
                 </Text>
               </View>
 

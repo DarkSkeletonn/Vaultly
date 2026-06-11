@@ -24,6 +24,7 @@ router.post("/", (req, res) => {
     source,
     type,
     content,
+    null,
     folderId
   );
 
@@ -116,6 +117,7 @@ router.post("/share", (req, res) => {
     source,
     type,
     sharedText,
+    null,
     folderId
   );
 

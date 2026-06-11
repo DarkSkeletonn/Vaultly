@@ -16,7 +16,22 @@ function getAllFolders() {
   `).all();
 }
 
+function getFolderStats() {
+  return db.prepare(`
+    SELECT
+      folders.id,
+      folders.name,
+      COUNT(items.id) AS count
+    FROM folders
+    LEFT JOIN items
+      ON folders.id = items.folder_id
+    GROUP BY folders.id, folders.name
+    ORDER BY folders.id
+  `).all();
+}
+
 module.exports = {
   createFolder,
-  getAllFolders
+  getAllFolders,
+  getFolderStats
 };
