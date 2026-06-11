@@ -6,7 +6,8 @@ const {
   getAllItems,
   searchItems,
   deleteItem,
-  updateItem
+  updateItem,
+  updateContentByPath
 } = require("../database/itemRepository");
 
 router.post("/", (req, res) => {
@@ -137,6 +138,7 @@ router.post("/index", (req, res) => {
     title,
     path,
     type,
+    content,
     folderId
   } = req.body;
 
@@ -144,10 +146,17 @@ router.post("/index", (req, res) => {
     title,
     "Gallery",
     type,
-    "",
+    content || "",
     path,
     folderId
   );
+
+  if (content) {
+    updateContentByPath(
+      path,
+      content
+    );
+  }
 
   res.status(201).json({
     id,

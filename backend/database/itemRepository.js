@@ -110,11 +110,24 @@ function getItemsByFolder(folderId) {
   return stmt.all(folderId);
 }
 
+function updateContentByPath(path, content) {
+
+  const stmt = db.prepare(`
+    UPDATE items
+    SET content = ?
+    WHERE path = ?
+      AND (content IS NULL OR content = '')
+  `);
+
+  return stmt.run(content, path);
+}
+
 module.exports = {
   createItem,
   getAllItems,
   searchItems,
   deleteItem,
   updateItem,
-  getItemsByFolder
+  getItemsByFolder,
+  updateContentByPath
 };

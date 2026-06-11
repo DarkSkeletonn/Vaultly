@@ -7,6 +7,12 @@ import android.content.ContentUris
 import android.os.Environment
 import java.io.File
 
+import android.net.Uri
+
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+
 class GalleryModule(
     reactContext: ReactApplicationContext
 ) : ReactContextBaseJavaModule(reactContext) {
@@ -227,6 +233,51 @@ class GalleryModule(
         } catch (e: Exception) {
 
             promise.reject("ERROR", e)
+
+        }
+    }
+
+    @ReactMethod
+    fun extractText(
+        imageUri: String,
+        promise: Promise
+    ) {
+
+        try {
+
+            val image = InputImage.fromFilePath(
+                reactApplicationContext,
+                Uri.parse(imageUri)
+            )
+
+            val recognizer =
+                TextRecognition.getClient(
+                    TextRecognizerOptions.DEFAULT_OPTIONS
+                )
+
+            recognizer.process(image)
+                .addOnSuccessListener { visionText ->
+
+                    promise.resolve(
+                        visionText.text
+                    )
+
+                }
+                .addOnFailureListener { e ->
+
+                    promise.reject(
+                        "OCR_ERROR",
+                        e
+                    )
+
+                }
+
+        } catch (e: Exception) {
+
+            promise.reject(
+                "OCR_ERROR",
+                e
+            )
 
         }
     }

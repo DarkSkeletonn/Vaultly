@@ -76,6 +76,11 @@ export default function HomeScreen({ navigation }: any) {
 
       for (const image of images) {
 
+        const text =
+          await GalleryModule.extractText(
+            image.uri
+          );
+
         await fetch(
           "http://10.0.2.2:3000/items/index",
           {
@@ -87,6 +92,7 @@ export default function HomeScreen({ navigation }: any) {
               title: image.name,
               path: image.uri,
               type: "photo",
+              content: text,
               folderId: 1
             })
           }
