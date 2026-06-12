@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text } from "react-native";
+import {
+  Text,
+  NativeModules,
+  NativeEventEmitter,
+} from "react-native";
 import HomeScreen from "./src/screens/HomeScreen";
 import FolderScreen from "./src/screens/FolderScreen";
 import SearchScreen from "./src/screens/SearchScreen";
@@ -72,6 +76,59 @@ function TabNavigator() {
 }
 
 export default function App() {
+
+  const { ShareModule } = NativeModules;
+
+  useEffect(() => {
+
+    const emitter =
+      new NativeEventEmitter(
+        ShareModule
+      );
+
+    const subscription =
+      emitter.addListener(
+        "VaultlyShareReceived",
+        async (sharedText) => {
+
+          console.log(
+            "SHARE RECEIVED =",
+            sharedText
+          );
+
+          try {
+
+            await fetch(
+              "http://10.0.2.2:3000/items/share",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  sharedText
+                })
+              }
+            );
+
+            console.log(
+              "Saved to Vaultly"
+            );
+
+          } catch (error) {
+
+            console.log(error);
+
+          }
+        }
+      );
+
+    return () => {
+      subscription.remove();
+    };
+
+  }, []);
+
   return (
     <NavigationContainer>
 

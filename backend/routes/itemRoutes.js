@@ -7,7 +7,8 @@ const {
   searchItems,
   deleteItem,
   updateItem,
-  updateContentByPath
+  updateContentByPath,
+  itemExists
 } = require("../database/itemRepository");
 
 router.post("/", (req, res) => {
@@ -103,6 +104,25 @@ router.post("/share", (req, res) => {
     folderId = 4;
   }
 
+  let title = "Shared Content";
+
+  const usernameMatch =
+    sharedText.match(/@([a-zA-Z0-9._]+)/);
+
+  if (usernameMatch) {
+
+    title = usernameMatch[1];
+
+  }
+
+  const urlMatch =
+    sharedText.match(/https?:\/\/\S+/);
+
+  const url =
+    urlMatch
+      ? urlMatch[0]
+      : sharedText;
+
   if(sharedText.includes("reel")) {
     type = "reel";
   }
@@ -113,11 +133,22 @@ router.post("/share", (req, res) => {
     folderId = 5;
   }
 
+  const existingItem =
+    itemExists(url);
+
+  if (existingItem) {
+
+    return res.json({
+      message: "Already saved"
+    });
+
+  }
+
   const id = createItem(
-    "Shared Content",
+    title,
     source,
     type,
-    sharedText,
+    url,
     null,
     folderId
   );

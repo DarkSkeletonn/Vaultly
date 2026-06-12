@@ -12,7 +12,8 @@ class GalleryPackage : ReactPackage {
     ): List<NativeModule> {
 
         return listOf(
-            GalleryModule(reactContext)
+            GalleryModule(reactContext),
+            ShareModule(reactContext)
         )
     }
 

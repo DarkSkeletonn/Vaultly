@@ -122,6 +122,16 @@ function updateContentByPath(path, content) {
   return stmt.run(content, path);
 }
 
+function itemExists(content) {
+
+  return db.prepare(`
+    SELECT id
+    FROM items
+    WHERE content = ?
+  `).get(content);
+
+}
+
 module.exports = {
   createItem,
   getAllItems,
@@ -129,5 +139,6 @@ module.exports = {
   deleteItem,
   updateItem,
   getItemsByFolder,
-  updateContentByPath
+  updateContentByPath,
+  itemExists
 };

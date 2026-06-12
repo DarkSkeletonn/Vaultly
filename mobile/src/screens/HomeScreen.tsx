@@ -176,7 +176,7 @@ export default function HomeScreen({ navigation }: any) {
       .catch(error => {
         console.log(error);
       });
-    
+
     refreshFolderStats();
 
   }, []);
