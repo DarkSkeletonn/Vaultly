@@ -11,6 +11,18 @@ const {
   itemExists
 } = require("../database/itemRepository");
 
+const {
+  getOrCreateFolder
+} = require("../database/folderRepository");
+
+const {
+  detectSource
+} = require("../services/sourceDetector");
+
+const {
+  parseShare
+} = require("../services/shareParser");
+
 router.post("/", (req, res) => {
 
   const {
@@ -95,54 +107,41 @@ router.post("/share", (req, res) => {
 
   const { sharedText } = req.body;
 
-  let source = "Unknown";
-  let type = "link";
-  let folderId = 3; // Documents default
+  const detected =
+    detectSource(sharedText);
 
-  if(sharedText.includes("instagram")) {
-    source = "Instagram";
-    folderId = 4;
-  }
+  const source =
+    detected.source;
 
-  let title = "Shared Content";
+  const folderName =
+    detected.folderName;
 
-  const usernameMatch =
-    sharedText.match(/@([a-zA-Z0-9._]+)/);
+  const parsed =
+    parseShare(
+      source,
+      sharedText
+    );
 
-  if (usernameMatch) {
-
-    title = usernameMatch[1];
-
-  }
-
-  const urlMatch =
-    sharedText.match(/https?:\/\/\S+/);
+  const title =
+    parsed.title;
 
   const url =
-    urlMatch
-      ? urlMatch[0]
-      : sharedText;
+    parsed.content;
 
-  if(sharedText.includes("reel")) {
-    type = "reel";
-  }
-
-  if(sharedText.includes("pinterest")) {
-    source = "Pinterest";
-    type = "pin";
-    folderId = 5;
-  }
+  const type =
+    parsed.type;
 
   const existingItem =
     itemExists(url);
 
   if (existingItem) {
-
     return res.json({
       message: "Already saved"
     });
-
   }
+
+  const folderId =
+  getOrCreateFolder(folderName);
 
   const id = createItem(
     title,

@@ -50,14 +50,4 @@ db.prepare(`
   VALUES ('Documents')
 `).run();
 
-db.prepare(`
-  INSERT OR IGNORE INTO folders(name)
-  VALUES ('Instagram')
-`).run();
-
-db.prepare(`
-  INSERT OR IGNORE INTO folders(name)
-  VALUES ('Pinterest')
-`).run();
-
 console.log("Default folders seeded!");

@@ -30,8 +30,33 @@ function getFolderStats() {
   `).all();
 }
 
+function getFolderByName(name) {
+  return db.prepare(`
+    SELECT *
+    FROM folders
+    WHERE name = ?
+  `).get(name);
+}
+
+function getOrCreateFolder(name) {
+
+  const existingFolder =
+    getFolderByName(name);
+
+  if (existingFolder) {
+    return existingFolder.id;
+  }
+
+  const result =
+    createFolder(name);
+
+  return result.lastInsertRowid;
+}
+
 module.exports = {
   createFolder,
   getAllFolders,
-  getFolderStats
+  getFolderStats,
+  getFolderByName,
+  getOrCreateFolder
 };
