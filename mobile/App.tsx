@@ -1,17 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  Text,
-  NativeModules,
-  NativeEventEmitter,
-} from "react-native";
+
 import HomeScreen from "./src/screens/HomeScreen";
 import FolderScreen from "./src/screens/FolderScreen";
 import SearchScreen from "./src/screens/SearchScreen";
 import AIScreen from "./src/screens/AIScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
+import ImagePreviewScreen from "./src/screens/ImagePreviewScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -34,10 +32,20 @@ function TabNavigator() {
         tabBarIcon: ({ focused }) => {
           let icon = "🏠";
 
-          if (route.name === "Home") icon = "🏠";
-          if (route.name === "Search") icon = "🔍";
-          if (route.name === "AI") icon = "✨";
-          if (route.name === "Settings") icon = "⚙️";
+          switch (route.name) {
+            case "Home":
+              icon = "🏠";
+              break;
+            case "Search":
+              icon = "🔍";
+              break;
+            case "AI":
+              icon = "✨";
+              break;
+            case "Settings":
+              icon = "⚙️";
+              break;
+          }
 
           return (
             <Text
@@ -52,92 +60,23 @@ function TabNavigator() {
         },
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-      />
-
-      <Tab.Screen
-        name="Search"
-        component={SearchScreen}
-      />
-
-      <Tab.Screen
-        name="AI"
-        component={AIScreen}
-      />
-
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="AI" component={AIScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
 
 export default function App() {
-
-  const { ShareModule } = NativeModules;
-
-  useEffect(() => {
-
-    const emitter =
-      new NativeEventEmitter(
-        ShareModule
-      );
-
-    const subscription =
-      emitter.addListener(
-        "VaultlyShareReceived",
-        async (sharedText) => {
-
-          console.log(
-            "SHARE RECEIVED =",
-            sharedText
-          );
-
-          try {
-
-            await fetch(
-              "http://10.0.2.2:3000/items/share",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  sharedText
-                })
-              }
-            );
-
-            console.log(
-              "Saved to Vaultly"
-            );
-
-          } catch (error) {
-
-            console.log(error);
-
-          }
-        }
-      );
-
-    return () => {
-      subscription.remove();
-    };
-
-  }, []);
-
   return (
     <NavigationContainer>
-
       <Stack.Navigator
+        initialRouteName="MainTabs"
         screenOptions={{
           headerShown: false,
         }}
       >
-
         <Stack.Screen
           name="MainTabs"
           component={TabNavigator}
@@ -148,8 +87,11 @@ export default function App() {
           component={FolderScreen}
         />
 
+        <Stack.Screen
+          name="ImagePreview"
+          component={ImagePreviewScreen}
+        />
       </Stack.Navigator>
-
     </NavigationContainer>
   );
 }
